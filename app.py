@@ -1,6 +1,6 @@
 import streamlit as st
 import plotly.graph_objects as go
-from engine import fetch_orbital_inventory, get_satellite_coordinates
+from engine import fetch_orbital_inventory, get_satellite_coordinates, detect_high_risk_conjunctions
 
 st.set_page_config(page_title="IAN-SCP Dashboard", layout="wide")
 
@@ -21,16 +21,15 @@ if monitor_active:
     with st.spinner("Accessing High-precision ephemeris streams..."):
         sats = fetch_orbital_inventory()
         st.success(f"Monitoring {len(sats)} active satellites across LEO.")
-        
+
         # --- CREATING THE TABS ---
-        tab1, tab2 = st.tabs(["🌐 3D Orbital Map", "📋 Active Satellite Inventory"])
-        
+        tab1, tab2, tab3 = st.tabs(["🌐 3D Orbital Map", "📋 Active Inventory", "⚠️ Risk Engine Alerts"])
         with tab1:
             st.write("### Live Orbital Map (High-density shell mapping)")
-            
+
             # Calculate coordinates
             x, y, z, names = get_satellite_coordinates(sats, sample_size=1000)
-            
+
             # Create the 3D Scatter Plot
             fig = go.Figure()
             fig.add_trace(go.Scatter3d(
@@ -40,7 +39,7 @@ if monitor_active:
                 marker=dict(size=2, color='cyan', opacity=0.8),
                 name="LEO Satellites"
             ))
-            
+
             # Format the map
             fig.update_layout(
                 template="plotly_dark",
@@ -50,16 +49,30 @@ if monitor_active:
                     yaxis=dict(showbackground=False, showgrid=False, zeroline=False, showticklabels=False),
                     zaxis=dict(showbackground=False, showgrid=False, zeroline=False, showticklabels=False),
                 ),
-                height=600 # Makes the map taller
+                height=600  # Makes the map taller
             )
-            
+
             st.plotly_chart(fig, use_container_width=True)
 
         with tab2:
             # --- THE TABLE TAB ---
             st.write("### Data Acquisition Layer")
             st.caption("Real-time list of ingested satellite telemetry.")
-            
+
             # Now showing 50 satellites since we have more room!
             sat_names = [s.name for s in sats[:50]]
             st.table({"Satellite Name": sat_names, "Status": ["Protected"] * 50})
+
+            with tab3:
+                st.write("### Autonomous Risk Prediction Engine")
+                st.caption(f"Scanning for trajectories breaching the 1e-4 threshold...")
+
+                with st.spinner("Calculating orbital conjunctions..."):
+                    # Run the math using the coordinates we already fetched
+                    alerts = detect_high_risk_conjunctions(x, y, z, names)
+
+                    if len(alerts) > 0:
+                        st.error(f"CRITICAL: {len(alerts)} high-risk conjunctions detected!")
+                        st.table(alerts)
+                    else:
+                        st.success("Clear: No high-risk conjunctions detected in current orbital shell.")
