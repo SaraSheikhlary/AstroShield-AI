@@ -86,5 +86,32 @@ if monitor_active:
                                 st.success("Maneuver vectors calculated successfully.")
                                 st.table(solutions)
 
+                                # --- NEW: Command Uplink Sequence ---
+                                st.divider()
+                                st.write("### Command & Control Uplink")
+
+                                # A prominent button for the operator
+                                if st.button("🚀 Authorize & Uplink Maneuvers", type="primary"):
+                                    import time
+
+                                    # Simulate the telemetry upload
+                                    progress_text = "Establishing secure TCP/IP uplink to LEO assets..."
+                                    progress_bar = st.progress(0, text=progress_text)
+
+                                    for percent_complete in range(100):
+                                        time.sleep(0.02)  # Artificial delay for effect
+                                        progress_bar.progress(percent_complete + 1,
+                                                              text=f"Uploading maneuver vectors... {percent_complete + 1}%")
+
+                                    time.sleep(0.5)
+                                    progress_bar.empty()
+
+                                    # Final confirmation
+                                    st.success(
+                                        "✅ TCP/IP Uplink Successful. Assets are currently executing Delta-V burns.")
+                                    st.info("Satellites will return to 'Safe' status upon maneuver completion.")
+                                    st.balloons()  # A little celebration for a successful test!
+
+
                     else:
                         st.success("Clear: No high-risk conjunctions detected in current orbital shell.")
