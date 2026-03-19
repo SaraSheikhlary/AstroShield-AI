@@ -17,6 +17,28 @@ def fetch_orbital_inventory():
     """
     url = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle'
     local_path = '/tmp/skyfield_data/active.txt'
+
+    def get_satellite_coordinates(satellites):
+    """Calculates real-time X, Y, Z positions for the 3D orbital map."""
+    # Create a timescale for current real-time positioning
+    ts = load.timescale()
+    t = ts.now()
+    
+    x_coords, y_coords, z_coords = [], [], []
+    
+    # Calculate the current position for each satellite in kilometers
+    for sat in satellites:
+        try:
+            geocentric = sat.at(t)
+            pos = geocentric.position.km
+            x_coords.append(pos[0])
+            y_coords.append(pos[1])
+            z_coords.append(pos[2])
+        except Exception:
+            # Skip any satellites with corrupted data to prevent crashes
+            pass
+            
+    return x_coords, y_coords, z_coords
     
     # 1. Create the temporary folder if it doesn't exist yet
     os.makedirs('/tmp/skyfield_data', exist_ok=True)
