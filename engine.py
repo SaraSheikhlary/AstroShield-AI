@@ -14,33 +14,9 @@ def fetch_orbital_inventory():
     url = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle'
     cloud_path = '/tmp/skyfield_data/active.txt'
     
-    # NEW: Bulletproof absolute path for Streamlit Cloud
+    # Bulletproof absolute path for Streamlit Cloud
     current_dir = os.path.dirname(os.path.abspath(__file__))
     backup_file = os.path.join(current_dir, 'active.txt')
-    
-    os.makedirs('/tmp/skyfield_data', exist_ok=True)
-    
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-    }
-    
-    try:
-        # 1. Try to get the live data from Celestrak
-        response = requests.get(url, headers=headers, timeout=5)
-        response.raise_for_status()
-        with open(cloud_path, 'w') as f:
-            f.write(response.text)
-        satellites = load.tle_file(cloud_path)
-        print("Success: Loaded live data from Celestrak.")
-        
-    except Exception:
-        # 2. If Celestrak blocks the cloud server, use our static backup!
-        print("Blocked by firewall: Falling back to offline active.txt backup.")
-        satellites = load.tle_file(backup_file)
-        
-    return satellites  
-    
-    # The offline file 
     
     os.makedirs('/tmp/skyfield_data', exist_ok=True)
     
@@ -65,24 +41,28 @@ def fetch_orbital_inventory():
     return satellites
 
 
-def get_satellite_coordinates(satellites):
+def get_satellite_coordinates(satellites, sample_size=1000):
     """Calculates real-time X, Y, Z positions for the 3D orbital map."""
     ts = load.timescale()
     t = ts.now()
     
-    x_coords, y_coords, z_coords = [], [], []
+    x_coords, y_coords, z_coords, names = [], [], [], []
     
-    for sat in satellites:
+    # Slice the list to only render a sample to prevent browser lag
+    sats_to_process = satellites[:sample_size] if sample_size else satellites
+    
+    for sat in sats_to_process:
         try:
             geocentric = sat.at(t)
             pos = geocentric.position.km
             x_coords.append(pos[0])
             y_coords.append(pos[1])
             z_coords.append(pos[2])
+            names.append(sat.name)
         except Exception:
             pass
             
-    return x_coords, y_coords, z_coords
+    return x_coords, y_coords, z_coords, names
 
 
 # --- PHASE 2: RISK PREDICTION ENGINE ---
