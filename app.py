@@ -151,4 +151,12 @@ if monitor_active:
 
 # --- FOOTER ---
 st.markdown("---")
-st.markdown("<div style='text-align: center; color: white;'>© 2026 AstroShield AI</div>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <div style='text-align: center; color: rgba(255, 255, 255, 0.6); font-size: 0.85em; padding-bottom: 20px;'>
+        © 2026 AstroShield AI. All rights reserved.<br>
+        <i>Powered by high-precision ephemeris streams and autonomous risk prediction.</i>
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
