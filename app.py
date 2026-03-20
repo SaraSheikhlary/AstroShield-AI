@@ -45,6 +45,12 @@ def apply_force_theme():
             color: #00d4ff !important;
         }
 
+        /* NEW: Force Title (h1) to stay on one line */
+        h1 {
+            font-size: 2.2rem !important;
+            white-space: nowrap !important;
+        }
+
         /* Glassmorphism for Metrics and Cards */
         [data-testid="stMetric"], [data-testid="stVerticalBlock"] > div, .stTabs {
             background: rgba(14, 17, 23, 0.8) !important;
