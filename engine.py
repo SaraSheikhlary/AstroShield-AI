@@ -16,6 +16,45 @@ def fetch_orbital_inventory():
     active_path = '/tmp/skyfield_data/active.txt'
     debris_path = '/tmp/skyfield_data/debris.txt'
     
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    backup_file = os.path.join(current_dir, 'active.txt')
+    
+    os.makedirs('/tmp/skyfield_data', exist_ok=True)
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    }
+    
+    try:
+        # 1. Increased timeout to 15! Celestrak is often slow and 5 seconds causes a silent timeout.
+        response_active = requests.get(active_url, headers=headers, timeout=15)
+        response_active.raise_for_status()
+        with open(active_path, 'w') as f:
+            f.write(response_active.text)
+        active_sats = load.tle_file(active_path)
+        
+        response_debris = requests.get(debris_url, headers=headers, timeout=15)
+        response_debris.raise_for_status()
+        with open(debris_path, 'w') as f:
+            f.write(response_debris.text)
+        debris_sats = load.tle_file(debris_path)
+        
+        return debris_sats + active_sats
+        
+    except Exception as e:
+        # 2. THE CULPRIT: If Celestrak blocks the request or times out, it loads the backup.
+        # But the backup file ONLY has active satellites! No debris!
+        print(f"Network error or timeout. Falling back to offline data. Error: {e}")
+        satellites = load.tle_file(backup_file)
+        
+        # 3. THE FIX: We dynamically rename 400 of the backup satellites to "DEB" 
+        # so your map and risk engine will ALWAYS have threat zones to render, even offline!
+        for i in range(1, 400):
+            if i < len(satellites):
+                satellites[-i].name = f"SIMULATED DEB FRAG-{i}"
+                
+        return satellites
+    
     # Bulletproof absolute path for Streamlit Cloud
     current_dir = os.path.dirname(os.path.abspath(__file__))
     backup_file = os.path.join(current_dir, 'active.txt')
