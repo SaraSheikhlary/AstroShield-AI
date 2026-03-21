@@ -71,7 +71,7 @@ def apply_force_theme():
 
 apply_force_theme()
 
-# --- The ORIGINAL LOGIC (Unchanged) ---
+# --- The ORIGINAL LOGIC ---
 st.title("🛰️ AstroShield AI: Satellite Collision Prevention")
 
 col1, col2, col3 = st.columns(3)
@@ -91,15 +91,21 @@ if monitor_active:
         
         with tab1:
             st.write("### Live Orbital Map (High-density shell mapping)")
-            x, y, z, names = get_satellite_coordinates(sats, sample_size=1000)
+            
+            # Removed the 1000 limit so it renders ALL objects!
+            x, y, z, names = get_satellite_coordinates(sats)
+
+            # --- NEW COLOR LOGIC ---
+            # Debris turns bright red, active satellites turn bright blue
+            point_colors = ['#ff003c' if 'DEB' in str(name).upper() else '#00f2fe' for name in names]
 
             fig = go.Figure()
             fig.add_trace(go.Scatter3d(
                 x=x, y=y, z=z,
                 mode='markers',
                 text=names,
-                marker=dict(size=2, color='cyan', opacity=0.8),
-                name="LEO Satellites"
+                marker=dict(size=2, color=point_colors, opacity=0.8), # Applied colors here
+                name="Orbital Objects"
             ))
 
             fig.update_layout(
@@ -120,8 +126,8 @@ if monitor_active:
             st.write("### Data Acquisition Layer")
             st.caption("Real-time list of ingested satellite telemetry.")
 
-            # --- NEW: Live Search Bar ---
-            search_term = st.text_input("🔍 Search Active Inventory (e.g., STARLINK, ISS, NOAA)", "STARLINK")
+            # --- Live Search Bar ---
+            search_term = st.text_input("🔍 Search Active Inventory (e.g., STARLINK, ISS, DEB)", "STARLINK")
             
             # Filter the satellite list based on what the user types
             filtered_names = [s.name for s in sats if search_term.upper() in s.name.upper()]
@@ -132,12 +138,12 @@ if monitor_active:
             # Display the table dynamically
             if len(display_names) > 0:
                 st.table({
-                    "Satellite Name": display_names, 
-                    "Operator/Type": ["SpaceX" if "STARLINK" in name else "Tracked Asset" for name in display_names],
-                    "Status": ["Protected"] * len(display_names)
+                    "Asset Name": display_names, 
+                    "Classification": ["Debris" if "DEB" in name else ("SpaceX" if "STARLINK" in name else "Tracked Asset") for name in display_names],
+                    "Status": ["Lethal Threat" if "DEB" in name else "Protected" for name in display_names]
                 })
             else:
-                st.warning(f"No active satellites found matching '{search_term}'.")
+                st.warning(f"No objects found matching '{search_term}'.")
 
         with tab3:
             st.write("### Autonomous Risk Prediction Engine")
