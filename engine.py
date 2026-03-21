@@ -41,14 +41,15 @@ def fetch_orbital_inventory():
     return satellites
 
 
-def get_satellite_coordinates(satellites, sample_size=1000):
+def get_satellite_coordinates(satellites, sample_size=None):
     """Calculates real-time X, Y, Z positions for the 3D orbital map."""
     ts = load.timescale()
     t = ts.now()
     
     x_coords, y_coords, z_coords, names = [], [], [], []
     
-    # Slice the list to only render a sample to prevent browser lag
+    # By setting sample_size to None by default, we bypass the slice limit.
+    # It will process ALL loaded satellites instead of just the first 1,000.
     sats_to_process = satellites[:sample_size] if sample_size else satellites
     
     for sat in sats_to_process:
