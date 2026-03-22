@@ -17,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     menu_items={
         'Get Help': 'https://astroshield-ai.com',
-        'Report a bug': 'https://github.com/yourusername/astroshield', # Update with your real github name!
+        'Report a bug': 'https://github.com/SaraSheikhary/astroshield', 
         'About': 'AstroShield AI: Real-time SGP4 orbital tracking and risk mitigation engine.'
     }
 )
