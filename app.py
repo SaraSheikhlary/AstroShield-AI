@@ -9,15 +9,19 @@ from engine import (
     calculate_evasion_maneuver
 )
 
-# 1. PAGE CONFIG (Updated for Google SEO & Branding)
+# --- PUBLIC ACCESS LINKS ---
+ASTROSHIELD_FAVICON_URL = "https://raw.githubusercontent.com/SaraSheikhlary/AstroShield-AI/main/Astroshield_favicon_square.png"
+ASTROSHIELD_LOGO_WIDE_URL = "https://raw.githubusercontent.com/SaraSheikhlary/AstroShield-AI/main/Astroshield_logo_wide.png"
+
+# 1. PAGE CONFIG
 st.set_page_config(
     page_title="AstroShield AI | Satellite Collision Avoidance Digital Twin",
-    page_icon="🛰️",
+    page_icon=ASTROSHIELD_FAVICON_URL,
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
         'Get Help': 'https://astroshield-ai.com',
-        'Report a bug': 'https://github.com/SaraSheikhary/astroshield', 
+        'Report a bug': 'https://github.com/SaraSheikhlary/AstroShield-AI',
         'About': 'AstroShield AI: Real-time SGP4 orbital tracking and risk mitigation engine.'
     }
 )
