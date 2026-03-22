@@ -1,47 +1,30 @@
-# 🛰️ AstroShield AI: Satellite Collision Prevention Architecture
+# 🛰️ AstroShield AI
+**Real-time Satellite Collision Avoidance & Digital Twin**
 
-> **The TCP/IP layer of orbital collision prevention.**
+AstroShield AI is a high-performance, interactive web application built to simulate and visualize Low Earth Orbit (LEO) satellite environments. It acts as a digital twin for orbital traffic management, utilizing (simulated) high-precision ephemeris streams to predict conjunctions and calculate evasion maneuvers for critical space assets.
 
-AstroShield AI is a localized, software-first solution designed to autonomously identify high-risk satellite conjunctions in Low Earth Orbit (LEO) and calculate optimized evasion maneuvers. By leveraging real-time Two-Line Element (TLE) telemetry and 3D orbital shell mapping, the system acts as an autonomous traffic control network for orbital assets.
+![AstroShield AI Banner](https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop) *(Optional: Replace this link with a screenshot of your actual landing page!)*
 
-## 📊 Key Performance Targets
-* **Collision Risk Threshold:** $1 \times 10^{-4}$ probability 
-* **Target Maneuver Success:** $\ge 92\%$
-* **Target Fuel Optimization:** $20 - 35\%$ reduction in Delta-V expenditure
+## ✨ Key Features
 
----
+* **Cinematic Landing Interface:** A highly polished, immersive entry sequence utilizing custom CSS and Streamlit session state routing.
+* **Live 3D Orbital Map:** Interactive, hardware-accelerated 3D rendering of the Earth and orbital shells using Plotly. Differentiates between active assets (e.g., Starlink, ISS) and lethal debris.
+* **Holographic Earth Core:** Custom mathematics to generate a translucent, glowing wireframe representation of Earth with dynamic latitude/longitude graticules.
+* **Data Acquisition Layer:** Searchable active inventory database for real-time tracking of simulated LEO objects.
+* **Autonomous Risk Engine:** Detects high-risk conjunctions (distance thresholds < 1e-4) and simulates optimal fuel-efficient evasion maneuvers.
 
-## 🏗️ System Architecture
+## 🛠️ Tech Stack
 
-The AstroShield AI codebase is divided into four distinct operational phases:
+* **Frontend / UI:** [Streamlit](https://streamlit.io/)
+* **3D Visualization:** [Plotly Graph Objects](https://plotly.com/python/)
+* **Mathematics & Ephemeris Calculation:** [NumPy](https://numpy.org/)
+* **Language:** Python 3.9+
 
-### Phase 1: Data Acquisition Layer (`engine.py`)
-* Ingests real-time TLE telemetry for 30,000+ active satellites and debris objects via Celestrak.
-* Translates raw ephemeris streams into actionable X, Y, Z geocentric coordinates.
-* Visualizes high-density orbital shells using an interactive 3D mapping interface.
+## 🚀 Quick Start (Run Locally)
 
-### Phase 2: Autonomous Risk Prediction Engine
-* Continuously scans the orbital environment for trajectories breaching the $1 \times 10^{-4}$ safety threshold.
-* Utilizes 3D Euclidean distance math to flag critical conjunctions between Target Assets and Approaching Objects.
+Want to run AstroShield AI on your own machine? Follow these steps:
 
-### Phase 3: Autonomous Execution Layer
-* Calculates optimal evasion maneuvers for flagged assets.
-* Generates precise Delta-V (m/s) burn vectors (Anti-radial, Prograde, Retrograde, Normal).
-* Enforces the 20-35% fuel optimization requirement to extend the lifespan of orbital assets.
-
-### Phase 4: Command & Control Uplink (`app.py`)
-* Provides a centralized Streamlit operator dashboard.
-* Facilitates human-in-the-loop authorization to uplink finalized maneuver vectors to LEO assets via simulated secure TCP/IP connections.
-
----
-
-## 🚀 Installation & Usage
-
-### Prerequisites
-Ensure you have Python 3.9+ installed.
-
-### Setup
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git](https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git)
-   cd YOUR-REPO-NAME
+   git clone [https://github.com/SaraSheikhlary/AstroShield-AI.git](https://github.com/SaraSheikhlary/AstroShield-AI.git)
+   cd AstroShield-AI
